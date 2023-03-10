@@ -186,10 +186,13 @@ function keyNav(){
 		}
 		if(document.getElementsByClassName("highlight").length>0){
 			var a = document.getElementsByClassName("highlight");
-			window.scrollTo({
+/* 			window.scrollTo({
 				top: a[0].offsetTop,
 				behavior: "smooth"
-			});	
+			});	 */
+			a[0].setAttribute("id", "kw_1");
+			ax(1);
+			selectText("kw_1");
 			if(a.length>1){
 				new_element = document.createElement("span");
 				new_element.innerHTML="<input id='kp' title='[Up]' type='button' value='prev'><input id='kn' title='[Down]' type='button' value='next'><input onclick='select(this)' size='2' id='jump' value='1' accesskey='j' title='Alt+J' /><span id='kwNum'></span><input id='jumpBtn' type='button' value='Jump' title='[Enter]' />";
