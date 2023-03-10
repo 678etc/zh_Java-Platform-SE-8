@@ -62,7 +62,7 @@ document.write(`<span id="nav" style="position:fixed;top:4px;right:0;z-index:999
  <a title="index-25.html" target="_self">Y</a>&nbsp; 
  <a title="index-26.html" target="_self">Z</a>&nbsp;  
  <a title="index-27.html" target="_self">_</a>&nbsp;
- <a title="index-0.html" target="_self">[All]</a>&nbsp;</span> <button id="np" title="[Left] go(-1)" onclick="history.go(-1)">&lt;</button><button id="nn" title="[Right] go(+1)" onclick="history.go(+1)">&gt;</button><input id="key" onclick="select(this)" accesskey='s' title='Alt+S' list="searchdata" size=14 /><datalist id="searchdata"></datalist><input onclick="keyNav();" type="button" value="Find" title='[Enter]' />
+ <a title="index-0.html" target="_self">[All]</a>&nbsp;</span> <button id="np" title="[Left] go(-1)" onclick="history.go(-1)">&lt;</button><button id="nn" title="[Right] go(+1)" onclick="history.go(+1)">&gt;</button><input id="key" onclick="select(this)" accesskey='s' title='Alt+S&#10;Enter 4 zeros to clear search history' list="searchdata" oninput='onInput()' onpaste="setTimeout(keyNav,50)" size=14 /><datalist id="searchdata"></datalist><input id="hhh" onclick="keyNav();" type="button" value="Find" title='[Enter]' />
 </span><button id="gotop" onclick="topFunction()" style="opacity: 0.5; background-color: #c9c9c9; font-size: 20px; display: none; position: fixed; top: 80%; right: 10px; z-index: 99; cursor: pointer; padding: 5px 20px; border: none;">^</button>`);
 
 var InstantSearch = {
@@ -157,7 +157,7 @@ var InstantSearch = {
 
 function keyNav(){
 	var key=document.getElementById("key").value;
-	if(key!=null && key!=''){
+	if(key!=null && key!='' && key!='0000'){
 		if(document.getElementsByClassName("highlight").length>0){
 			var a = document.getElementsByClassName("highlight");
 			while(a.length) {
@@ -249,6 +249,7 @@ function keyNav(){
 			alert("null")
 		}
 	}
+	document.getElementById('key').blur();
 }
 
 function keyDown(e) {
@@ -368,3 +369,18 @@ document.getElementById("key").addEventListener("focus", () => {
 		data.querySelector("option").innerText = search;
 	});
 });
+
+function onInput() {
+	var val = document.getElementById("key").value;
+	var opts = document.getElementById('searchdata').childNodes;
+	for (var i = 0; i < opts.length; i++) {
+		if (opts[i].value === val) {
+			keyNav();
+			break;
+		}
+	}
+	if(val==="0000"){
+		document.getElementById("key").value="";
+		searchHistory=[];
+	}
+}
