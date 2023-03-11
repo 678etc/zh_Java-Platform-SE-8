@@ -32,7 +32,7 @@ function updateTabs(type)
 //Injected by 678etc@gmail.com 
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML='::selection{background-color:red;color:white; }::-moz-selection{background:red;color:white;}body{display:none}.highlight{background-color: yellow;}#key_nav{background-color:white;z-index:99999999;position:fixed;top:30px;right:0};';
+style.innerHTML='::selection{background-color:red;color:white; }::-moz-selection{background:red;color:white;}body{display:none}.highlight{background-color: yellow;}#key_nav{background-color:white;z-index:99999999;position:fixed;top:30px;right:0}#rs{display:none}';
 document.getElementsByTagName('HEAD').item(0).appendChild(style);
 
 document.write(`<span id="nav" style="position:fixed;top:4px;right:0;z-index:99999999"><span id="la" style="display:none"><a title="index-1.html" target="_self">A</a>&nbsp; 
@@ -63,7 +63,7 @@ document.write(`<span id="nav" style="position:fixed;top:4px;right:0;z-index:999
  <a title="index-26.html" target="_self">Z</a>&nbsp;  
  <a title="index-27.html" target="_self">_</a>&nbsp;
  <a title="index-0.html" target="_self">[All]</a>&nbsp;</span> <button id="np" title="[Left] go(-1)" onclick="history.go(-1)">&lt;</button><button id="nn" title="[Right] go(+1)" onclick="history.go(+1)">&gt;</button><input id="key" onclick="select(this)" accesskey='s' title='Alt+S&#10;Enter 4 zeros to clear search history' list="searchdata" oninput='onInput()' onpaste="setTimeout(keyNav,50)" size=14 /><datalist id="searchdata"></datalist><input id="hhh" onclick="keyNav();" type="button" value="Find" title='[Enter]' />
-</span><button id="gotop" onclick="topFunction()" style="opacity: 0.5; background-color: #c9c9c9; font-size: 20px; display: none; position: fixed; top: 80%; right: 10px; z-index: 99; cursor: pointer; padding: 5px 20px; border: none;">^</button>`);
+<br/></span><span id='rs' style="padding: 0 10px; background-color: yellow;font-style: italic; color: red; position: fixed; top: 25px; right: 177px; z-index: 99999999;">No results</span><button id="gotop" onclick="topFunction()" style="opacity: 0.5; background-color: #c9c9c9; font-size: 20px; display: none; position: fixed; top: 80%; right: 10px; z-index: 99; cursor: pointer; padding: 5px 20px; border: none;">^</button>`);
 
 var InstantSearch = {
 	"highlight": function(container, highlightText) {
@@ -185,6 +185,7 @@ function keyNav(){
 			parent.removeChild(z[0]);
 		}
 		if(document.getElementsByClassName("highlight").length>0){
+			document.getElementById("rs").style.display="none";
 			var a = document.getElementsByClassName("highlight");
 /* 			window.scrollTo({
 				top: a[0].offsetTop,
@@ -246,7 +247,7 @@ function keyNav(){
 				}	
 			}
 		}else{
-			alert("null")
+			document.getElementById("rs").style.display="block";
 		}
 	}
 	document.getElementById('key').blur();
@@ -370,17 +371,27 @@ document.getElementById("key").addEventListener("focus", () => {
 	});
 });
 
+var timerId;
+function debounce(func, delay) {
+	clearTimeout(timerId)
+	timerId  =  setTimeout(func, delay)
+}
+
 function onInput() {
 	var val = document.getElementById("key").value;
 	var opts = document.getElementById('searchdata').childNodes;
-	for (var i = 0; i < opts.length; i++) {
-		if (opts[i].value === val) {
-			keyNav();
-			break;
-		}
-	}
 	if(val==="0000"){
 		document.getElementById("key").value="";
 		searchHistory=[];
+		localStorage.removeItem("searchHistory");
 	}
+	debounce(function(){
+		for (var i = 0; i < opts.length; i++) {
+			if (opts[i].value === val){
+				document.getElementById("hhh").focus();
+				document.getElementById("hhh").click();
+				break;
+			}
+		}
+	}, 1000);
 }
